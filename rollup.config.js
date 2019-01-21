@@ -8,13 +8,17 @@ export default {
 		{
 			file: './dist/markdown.js',
 			format: 'iife',
-			name: 'Markdown'
+			name: 'Markdown',
+			globals: {
+				react: 'React'
+			}
 		},
 		{
 			file: './dist/markdown.cjs.js',
 			format: 'cjs',
 		}
 	],
+	external: ['react'],
 	plugins: [
 		resolve(),
 		babel({
