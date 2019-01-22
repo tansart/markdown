@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
+import React from 'react';
 
-export default class Markdown extends Component {
-
+export default function Markdown({data}) {
+	return <div dangerouslySetInnerHTML={{__html: data}}></div>;
 }

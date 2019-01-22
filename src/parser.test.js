@@ -2,9 +2,11 @@ import parser from './parser';
 
 test('can parse paragraphs', () => {
 	expect(parser(`Hello world!`)).toBe(`<p>Hello world!</p>`);
+
 	expect(parser(`Hello world!
 Hello other world!`)).toBe(`<p>Hello world!
 Hello other world!</p>`);
+
 	expect(parser(`Hello world!
 
 Hello other world!`)).toBe(`<p>Hello world!</p>
@@ -39,7 +41,6 @@ test('can parse ordered lists', () => {
 </ol>`)
 });
 
-
 test('can parse ordered lists', () => {
 	expect(parser(`Hello world
   * Hello
@@ -62,7 +63,6 @@ test('can parse ordered lists', () => {
 </ul>`)
 });
 
-
 test('can parse a mix ordered/unordered lists', () => {
 	expect(parser(`Hello world
   * Hello
@@ -80,5 +80,15 @@ test('can parse a mix ordered/unordered lists', () => {
       <li>list</li>
     </ol>
   </li>
+</ul>`)
+});
+
+test('can parse a mix of texts and lists', () => {
+	expect(parser(`*Hello* **world**
+  * **I'm bold**
+  * *I'm italics*`)).toBe(`<p><i>Hello</i> <strong>world</strong></p>
+<ul>
+  <li><strong>I'm bold</strong></li>
+  <li><i>I'm italics</i></li>
 </ul>`)
 });
