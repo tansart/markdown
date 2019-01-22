@@ -12,7 +12,7 @@ Hello other world!`)).toBe(`<p>Hello world!</p>
 });
 
 test('can parse bold text', () => {
-	expect(parser(`Hello **world**!`)).toBe(`<p>Hello <strong>world</strong></p>`);
+	expect(parser(`Hello **world**!`)).toBe(`<p>Hello <strong>world</strong>!</p>`);
 	expect(parser(`Hello ** world **!`)).toBe(`<p>Hello ** world **!</p>`);
 	expect(parser(`Hello **bold** world! **bold**`)).toBe(`<p>Hello <strong>bold</strong> world! <strong>bold</strong></p>`);
 });
@@ -24,7 +24,7 @@ test('can parse italic text', () => {
 });
 
 test('can parse urls', () => {
-	expect(parser(`Hello  [world!](https://maps.google.com)`)).toBe(`<p>Hello <a href="https://maps.google.com">world!</a></p>`);
+	expect(parser(`Hello [world!](https://maps.google.com)`)).toBe(`<p>Hello <a href="https://maps.google.com">world!</a></p>`);
 });
 
 test('can parse ordered lists', () => {
@@ -58,6 +58,27 @@ test('can parse ordered lists', () => {
       </li>
       <li>:)</li>
     </ul>
+  </li>
+</ul>`)
+});
+
+
+test('can parse a mix ordered/unordered lists', () => {
+	expect(parser(`Hello world
+  * Hello
+  * world
+    1. Hello
+    2. numbered
+    3. list`)).toBe(`<p>Hello world</p>
+<ul>
+  <li>Hello</li>
+  <li>world</li>
+  <li>
+    <ol>
+      <li>Hello</li>
+      <li>numbered</li>
+      <li>list</li>
+    </ol>
   </li>
 </ul>`)
 });
