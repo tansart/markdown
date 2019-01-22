@@ -29,6 +29,20 @@ test('can parse urls', () => {
 	expect(parser(`Hello [world!](https://maps.google.com)`)).toBe(`<p>Hello <a href="https://maps.google.com">world!</a></p>`);
 });
 
+test('can parse headers h1 to h6', () => {
+	expect(parser(`# hello
+## world
+### hello
+#### world
+##### hello
+###### world`)).toBe(`<h1>hello</h1>
+<h2>world</h2>
+<h3>hello</h3>
+<h4>world</h4>
+<h5>hello</h5>
+<h6>world</h6>`)
+});
+
 test('can parse ordered lists', () => {
 	expect(parser(`Hello world
   1. Hello

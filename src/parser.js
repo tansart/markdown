@@ -13,14 +13,36 @@ function parseParagraph(str) {
 	const strArr = str.split('\n\n');
 	const len = strArr.length;
 
-
 	return strArr.reduce((acc, p, i) => {
 		const suffix = i + 1 < len ? '\n' : '';
 		const listType = getListType(p);
-		const content = listType ? parseList(p) : `<p>${p}</p>`;
+
+		let content;
+
+		if (listType) {
+			content = parseList(p);
+		} else {
+			content = parseHeader(p);
+
+			if (!content) {
+				content = `<p>${p}</p>`;
+			}
+		}
 
 		return `${acc}${content}${suffix}`;
 	}, '');
+}
+
+function parseHeader(str) {
+	const pattern = /^([#]+)[\s](.+)/igm;
+
+	if(str.search(pattern) < 0) {
+		return null;
+	}
+
+	return str.replace(pattern, (match, header, title) => {
+		return `<h${header.length}>${title}</h${header.length}>`;
+	});
 }
 
 function parseBold(str) {
@@ -43,7 +65,7 @@ function parseAnchors(str) {
 	const pattern = /\[([^\]]+)\]\(([^\)]+)\)/ig;
 	const patternResult = pattern.exec(str);
 
-	if(!patternResult) {
+	if (!patternResult) {
 		return str;
 	}
 
