@@ -25,6 +25,11 @@ test('can parse italic text', () => {
 	expect(parser(`Hello *italic* world! *italic*`)).toBe(`<p>Hello <i>italic</i> world! <i>italic</i></p>`);
 });
 
+test('can parse images', () => {
+	expect(parser(`![world!](https://maps.google.com)`)).toBe(`<div class="image-wrapper"><img src="https://maps.google.com" alt="world!" /></div>`);
+	expect(parser(`Hello ![world!](https://maps.google.com)`)).toBe(`<div class="image-wrapper">Hello <img src="https://maps.google.com" alt="world!" /></div>`);
+});
+
 test('can parse urls', () => {
 	expect(parser(`Hello [world!](https://maps.google.com)`)).toBe(`<p>Hello <a href="https://maps.google.com">world!</a></p>`);
 });

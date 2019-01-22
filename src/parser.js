@@ -25,6 +25,10 @@ function parseParagraph(str) {
 			content = parseHeader(p);
 
 			if (!content) {
+				content = parseImages(p);
+			}
+
+			if (!content) {
 				content = `<p>${p}</p>`;
 			}
 		}
@@ -59,6 +63,23 @@ function parseItalic(str) {
 	return str.replace(pattern, (match, group) => {
 		return `<i>${group}</i>`;
 	});
+}
+
+function parseImages(str) {
+	const pattern = /!\[([^\]]+)\]\(([^\)]+)\)/ig;
+	const patternResult = pattern.exec(str);
+
+	if (!patternResult) {
+		return null;
+	}
+
+	const {index} = patternResult;
+	const [match, label, src] = patternResult;
+
+	const prefix = str.substr(0, index);
+	const suffix = str.substr(index + match.length);
+
+	return `<div class="image-wrapper">${prefix}<img src="${src}" alt="${label}" />${suffix}</div>`;
 }
 
 function parseAnchors(str) {
