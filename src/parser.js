@@ -1,12 +1,24 @@
 import {getListType, parseList} from './listParser';
 
-export default function parser(str) {
-	return [
+export default function parser(str, cacheId) {
+	const output = [
 		parseParagraph,
 		parseBold,
 		parseItalic,
 		parseAnchors
 	].reduce((acc, fn) => fn(acc), str);
+
+	if(cacheId && sessionStorage) {
+		const cached = sessionStorage.getItem(sessionKey(cacheId));
+
+		if(cached) {
+			return cached;
+		}
+
+		sessionStorage.setItem(sessionKey(cacheId), output)
+	}
+
+	return output;
 }
 
 function parseParagraph(str) {
@@ -97,4 +109,8 @@ function parseAnchors(str) {
 	const suffix = str.substr(index + match.length);
 
 	return `${prefix}<a href="${link}">${label}</a>${suffix}`;
+}
+
+function sessionKey(key) {
+	return `markdown.parser.${key}`;
 }

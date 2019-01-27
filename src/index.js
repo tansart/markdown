@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {memo} from 'react';
 import parser from './parser';
 
-export default function Markdown({data, ...props}) {
-	return <div {...props} dangerouslySetInnerHTML={{__html: parser(data)}}></div>;
-}
+export default memo(function Markdown({cacheid, data, ...props}) {
+	return <div {...props} dangerouslySetInnerHTML={{__html: parser(data, cacheid)}}></div>;
+});
