@@ -8,7 +8,7 @@ export default function parser(str, cacheId) {
 		parseAnchors
 	].reduce((acc, fn) => fn(acc), str);
 
-	if(cacheId && sessionStorage) {
+	if(cacheId && typeof sessionStorage !== 'undefined') {
 		const cached = sessionStorage.getItem(sessionKey(cacheId));
 
 		if(cached) {
