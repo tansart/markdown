@@ -1,4 +1,8 @@
 export function parseList(str) {
+  const listType = getListType(str);
+
+  if (!listType) return null;
+
   const list = [];
   const output = [];
   const indentTrack = {};

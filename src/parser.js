@@ -2,7 +2,7 @@ import {getListType, parseList} from './listParser';
 
 export default function parser(str, cacheId) {
   const output = [
-    parseParagraph,
+    parseBlock,
     parseBold,
     parseItalic,
     parseAnchors
@@ -21,32 +21,43 @@ export default function parser(str, cacheId) {
   return output;
 }
 
-function parseParagraph(str) {
+function parseBlock(str) {
   const strArr = str.split('\n\n');
   const len = strArr.length;
 
+  const parseChain = [parseList, parseHeader, parseImages, parseCode, parseParagraph];
+
   return strArr.reduce((acc, p, i) => {
     const suffix = i + 1 < len ? '\n' : '';
-    const listType = getListType(p);
 
-    let content;
-
-    if (listType) {
-      content = parseList(p);
-    } else {
-      content = parseHeader(p);
-
-      if (!content) {
-        content = parseImages(p);
-      }
-
-      if (!content) {
-        content = `<p>${p}</p>`;
-      }
-    }
+    const content = parseChain.reduce((acc, parser) => {
+      if(!acc) return parser(p);
+      return acc;
+    }, null);
 
     return `${acc}${content}${suffix}`;
   }, '');
+}
+
+function parseParagraph(str) {
+  return `<p>${str}</p>`;
+}
+
+function parseCode(str) {
+  const pattern = /^```([\w]+)?/ig;
+  const patternEnd = /```$/;
+
+  let out = str.replace(pattern, (match, languageType) => {
+    if(languageType) {
+      return `<code class="language-${languageType}">`;
+    }
+
+    return `<code>`;
+  });
+
+  if(out === str) return null;
+
+  return out.replace(patternEnd, _ => `</code>`);
 }
 
 function parseHeader(str) {
