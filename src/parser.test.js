@@ -102,6 +102,20 @@ test('can parse a mix ordered/unordered lists', () => {
 </ul>`)
 });
 
+test('can parse code', () => {
+  expect(parser(`\`\`\`
+~function() {
+  test('how meta...', () => {
+    expect(this).toWork();
+  })
+}();\`\`\``)).toBe(`<code>
+~function() {
+  test('how meta...', () => {
+    expect(this).toWork();
+  })
+}();</code>`)
+});
+
 test('can parse a mix of texts and lists', () => {
   expect(parser(`*Hello* **world**
   * **I'm bold**
