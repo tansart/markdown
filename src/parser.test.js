@@ -116,6 +116,24 @@ test('can parse code', () => {
 }();</code>`)
 });
 
+test('can handle multiple lines and specific languages', () => {
+  expect(parser(`\`\`\`javascript
+~function() {
+
+  test('how meta...', () => {
+    expect(this).toWork();
+  })
+
+}();\`\`\``)).toBe(`<code class="language-javascript">
+~function() {
+
+  test('how meta...', () => {
+    expect(this).toWork();
+  })
+
+}();</code>`)
+});
+
 test('can parse code with specific language', () => {
   expect(parser(`\`\`\`javascript
 ~function() {
