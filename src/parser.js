@@ -146,19 +146,10 @@ function parseImages(str) {
 
 function parseAnchors(str) {
   const pattern = /\[([^\]]+)\]\(([^\)]+)\)/ig;
-  const patternResult = pattern.exec(str);
 
-  if (!patternResult) {
-    return str;
-  }
-
-  const {index} = patternResult;
-  const [match, label, link] = patternResult;
-
-  const prefix = str.substr(0, index);
-  const suffix = str.substr(index + match.length);
-
-  return `${prefix}<a href="${link}">${label}</a>${suffix}`;
+  return str.replace(pattern, function(match, label, link) {
+    return `<a href="${link}">${label}</a>`;
+  });
 }
 
 function sessionKey(key) {

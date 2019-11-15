@@ -32,6 +32,7 @@ test('can parse images', () => {
 
 test('can parse urls', () => {
   expect(parser(`Hello [world!](https://maps.google.com)`)).toBe(`<p>Hello <a href="https://maps.google.com">world!</a></p>`);
+  expect(parser(`Hello [world](https://maps.google.com), and [something!](https://www.google.com)`)).toBe(`<p>Hello <a href="https://maps.google.com">world</a>, and <a href="https://www.google.com">something!</a></p>`);
 });
 
 test('can parse headers h1 to h6', () => {
