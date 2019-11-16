@@ -103,6 +103,14 @@ test('can parse a mix ordered/unordered lists', () => {
 </ul>`)
 });
 
+test('can parse inline code', () => {
+  expect(parser(`I'm a sentence, and here's an \`inline code block\`.`)).toBe(`<p>I'm a sentence, and here's an <code>inline code block</code>.</p>`)
+});
+
+test('can parse multiple inline code blocks in a row', () => {
+  expect(parser(`I'm an \`inline code block\`, and here's another \`inline code block\`.`)).toBe(`<p>I'm an <code>inline code block</code>, and here's another <code>inline code block</code>.</p>`)
+});
+
 test('can parse code', () => {
   expect(parser(`\`\`\`
 ~function() {

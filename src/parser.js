@@ -5,7 +5,8 @@ export default function parser(str, cacheId) {
     parseBlock,
     parseBold,
     parseItalic,
-    parseAnchors
+    parseAnchors,
+    parseInlineCode
   ].reduce((acc, fn) => fn(acc), str);
 
   if (cacheId && typeof sessionStorage !== 'undefined') {
@@ -97,6 +98,14 @@ function parseCodeEnd(str) {
   if(!isCodeBlock) return null;
 
   return out;
+}
+
+function parseInlineCode(str) {
+  const pattern = /`([^`]+)`/ig;
+
+  return str.replace(pattern, (match, inlineCode) => {
+    return `<code>${inlineCode}</code>`;
+  });
 }
 
 function parseHeader(str) {
