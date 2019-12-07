@@ -36,7 +36,7 @@ function parseBlock(str) {
 
     if(isCodeBlock) {
       const content = parseCodeEnd(p);
-      isCodeBlock = !content; // is content is truthy, the code block ends there.
+      isCodeBlock = !content; // if content is truthy, the code block ends there.
       return `${acc}\n${content ? content: p}${suffix}`;
     }
 
@@ -69,7 +69,7 @@ function parseParagraph(str) {
 
 function parseCodeStart(str) {
   let isCodeBlock = false;
-  const pattern = /^```([\w]+)?/ig;
+  const pattern = /^```([\w]+)?/img;
 
   const out = str.replace(pattern, (match, languageType) => {
     isCodeBlock = true;
@@ -88,7 +88,7 @@ function parseCodeStart(str) {
 
 function parseCodeEnd(str) {
   let isCodeBlock = false;
-  const patternEnd = /```$/;
+  const patternEnd = /```$/m;
 
   const out = str.replace(patternEnd, _ => {
     isCodeBlock = true;
@@ -101,12 +101,43 @@ function parseCodeEnd(str) {
 }
 
 function parseInlineCode(str) {
+  const codeBlockPattern = /<code[^>]*>([\s\S]+?)<\/code>/igm;
   const pattern = /`([^`]+)`/ig;
 
-  return str.replace(pattern, (match, inlineCode) => {
-    return `<code>${inlineCode}</code>`;
-  });
+  const parsedString = [];
+
+  let match;
+  let prevLastIndex = 0;
+
+  while (true) {
+    match = codeBlockPattern.exec(str);
+    if(match) {
+      if(prevLastIndex === 0 && match.index > 0) {
+        parsedString.push({ type: 'string', content: str.substring(0 , match.index) });
+      } else if(prevLastIndex < match.index - 1) {
+        parsedString.push({ type: 'string', content: str.substring(prevLastIndex, match.index) });
+      }
+
+      parsedString.push({ type: 'code', content: str.substring(match.index, codeBlockPattern.lastIndex) });
+      prevLastIndex = codeBlockPattern.lastIndex;
+    } else {
+      break;
+    }
+  }
+
+  parsedString.push({ type: 'string', content: str.substring(prevLastIndex) });
+
+  return parsedString.reduce((acc, {type, content}) => {
+    if(type === 'string') {
+      return acc.concat(content.replace(pattern, (match, inlineCode, index) => {
+        return `<code>${inlineCode}</code>`;
+      }));
+    }
+    return acc.concat(content);
+  }, []).join('');
 }
+
+function splitCodeBlocks() {}
 
 function parseHeader(str) {
   const pattern = /^([#]+)[\s](.+)/igm;

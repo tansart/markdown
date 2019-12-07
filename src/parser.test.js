@@ -114,12 +114,12 @@ test('can parse multiple inline code blocks in a row', () => {
 test('can parse code', () => {
   expect(parser(`\`\`\`
 ~function() {
-  test('how meta...', () => {
+  test(\`how meta...\`, () => {
     expect(this).toWork();
   })
 }();\`\`\``)).toBe(`<code>
 ~function() {
-  test('how meta...', () => {
+  test(\`how meta...\`, () => {
     expect(this).toWork();
   })
 }();</code>`)
@@ -143,18 +143,41 @@ test('can handle multiple lines and specific languages', () => {
 }();</code>`)
 });
 
-test('can parse code with specific language', () => {
-  expect(parser(`\`\`\`javascript
+test('c-an parse code mixed with other blocks', () => {
+  expect(parser(`Let's mix \`inline\` and block of code:
+
+\`\`\`
 ~function() {
-  test('how meta...', () => {
+  test(\`how meta...\`, () => {
     expect(this).toWork();
   })
-}();\`\`\``)).toBe(`<code class="language-javascript">
+}();\`\`\``)).toBe(`<p>Let's mix <code>inline</code> and block of code:</p>
+<code>
 ~function() {
-  test('how meta...', () => {
+  test(\`how meta...\`, () => {
     expect(this).toWork();
   })
 }();</code>`)
+});
+
+test('can parse code mixed with other blocks', () => {
+  expect(parser(`\`\`\`
+console.log(\`so much for a block\`);\`\`\`
+
+hello \`inline code\`
+
+\`\`\`
+console.log(\`so much for a block\`);\`\`\`
+
+\`\`\`
+console.log(\`side by side code blocks\`);\`\`\`
+`)).toBe(`<code>
+console.log(\`so much for a block\`);</code>
+<p>hello <code>inline code</code></p>
+<code>
+console.log(\`so much for a block\`);</code><code>
+console.log(\`side by side code blocks\`);</code>
+`)
 });
 
 test('can parse a mix of texts and lists', () => {
